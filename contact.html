@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaik Zakir Hussain </title>
+    <link rel="icon" href="images/A letter tech logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head><style>/* CSS Reset */
+  body, h1, p, form, input, textarea, button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Container */
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    margin-top: 110px;
+  }
+  
+  .container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .container form{
+    margin-left: -70px;
+    margin-top: 100px;
+  }
+  /* Form Styling */
+  .form-group {
+    margin-bottom: 20px;
+    
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  </style>
+<body>
+ 
+    <div class="topnav" id="myTopnav">
+      <a href="index.html" class="active">Home</a>
+      <a href="intro.html">Info</a>
+      <a href="blog.html">Blog</a>
+      <a href="contact.html" class="active">Contact</a>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNav()">&#9776;</a>
+      </div>
+       </div>
+    <div class="main">
+      <div class="container">
+        <h1>Contact Us:</h1>
+        <form action="process_form.php" method="post">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+</div>
+<footer class="footer">
+    <div class="contact-details">
+      <h2>Contact Details</h2>
+      <p>Email: shaikzakirhussain2018@gmail.com</p>
+      <p>Phone: +91 7386353013</p>
+      <p>Address: Arif Street, Chandole, Andhra Pradesh, India(522311)</p>
+      <!-- Social Media Icons -->
+      <div class="social-icons">
+        <a href="#" class="icon-link"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="icon-link"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/_zakir_shaik_?igshid=MzNlNGNkZWQ4Mg==" class="icon-link"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/in/shaik-zakir-hussain" class="icon-link"><i class="fab fa-linkedin"></i></a>
+        <marquee><p style="text-align: center;
+          padding: 10px;
+          background-color: #f7f7f7;
+          color: #666;
+          margin-top:25px;">&copy; 2023 My Portfolio. All rights reserved.</p></marquee>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
