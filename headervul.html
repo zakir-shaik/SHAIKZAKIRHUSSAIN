@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Application Security: HTTP Headers</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
+    <meta http-equiv="X-Frame-Options" content="deny">
+    <link rel="icon" href="images/LOGO.jpg" type="image/png">
+  
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      display: flex;
+    }
+
+    #sidebar {
+      background-color: #f4f4f4;
+      padding: 20px;
+      min-width: 250px;
+      margin-top: 40px;
+    }
+
+    #content {
+      flex: 1;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    h1, h2, h3 {
+      color: #333;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      background-color: #f4f4f4;
+      padding: 2px 5px;
+      border: 1px solid #ddd;
+    }
+
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .header-title {
+      font-size: 1.5em;
+      color: #0066cc;
+      margin-bottom: 10px;
+    }
+
+    .should-have {
+      color: #008000;
+      font-weight: bold;
+    }
+
+    .should-not-have {
+      color: #ff0000;
+      font-weight: bold;
+    }
+
+    .example-code {
+      margin: 10px 0;
+    }
+
+    .explanation {
+      color: #666;
+    }
+    /* Top Navigation Bar */
+.topnav {
+    background-color: #084b7b;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1482px;
+    
+  }
+  
+  .topnav a {
+    float: left;
+    color: #fff;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  .topnav a:hover {
+    background-color: #555;
+  }
+  
+  .topnav a.active {
+    background-color: #007bff;
+  }
+  
+  
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topnav" id="myTopnav">
+      <a href="index.html" >Home</a>
+      <a href="top10.html">OWASP TOP 10</a>
+      <a href="headervul.html" class="active">Header vulnerabilities</a>
+      </div>
+       </div>
+
+  <div id="sidebar">
+    <h2>Sections</h2>
+    <ul>
+      <li><a href="#section-hsts">1. Strict-Transport-Security (HSTS)</a></li>
+      <li><a href="#section-csp">2. Content Security Policy (CSP)</a></li>
+      <li><a href="#section-3">3. Cross-Origin Resource Sharing (CORS)</a></li>
+      <li><a href="#section-X-FRAME">4. X-Frame-Options</a></li>
+      <li><a href="#section-HPKP">5. HTTP Public Key Pinning (HPKP)</a></li>
+      <li><a href="#section-Referrer Policy">6. Referrer Policy</a></li>
+      <li><a href="#section-Cookie Attributes">7. Cookie Attributes</a></li>
+      <li><a href="#section-Cache-Control Header">8. Cache-Control Header</a></li>
+      <li><a href="#section-Server Header">9. Server Header</a></li>
+      <li><a href="#section-Expect-CT Header">10. Expect-CT Header</a></li>
+      <li><a href="#section-Feature Policy Header">11. Feature Policy Header</li>
+      <li><a href="#section-X-Content-Type-Options Header">12. X-Content-Type-Options Header</li>
+      <li><a href="#section-X-Content-Security-Policy Header">13. X-Content-Security-Policy Header</a></li>
+      <li><a href="#section-X-Permitted-Cross-Domain-Policies">14. X-Permitted-Cross-Domain-Policies</a></li>
+      <li><a href="#section-Proxy Headers">15. Proxy Headers</a></li>
+      <li><a href="#section-Early-Data">16. Early-Data</a></li>
+      <li><a href="#section-X-Download-Options Header">17. X-Download-Options Header</a></li>
+      <li><a href="#section-Public-Key-Pins">18. Public-Key-Pins</a></li>
+      <li><a href="#section-X-Clacks-Overhead ">19.X-Clacks-Overhead </a></li>
+      <li><a href="#section-X-DNS-Prefetch-Control">20. X-DNS-Prefetch-Control</a></li>
+      <li><a href="#section-Content-Disposition">21. Content-Disposition</a></li>
+      <li><a href="#section-Cross-Domain Cookies">22.Cross-Domain Cookies</a></li>
+      <li><a href="#section-X-WebKit-CSP">23.X-WebKit-CSP</a></li>
+      <li><a href="#section-X-XSS-Protection">24.X-XSS-Protection</a></li>
+      <li><a href="#section-Early-Data">25.Early-Data</a></li>
+      <li><a href="#section-X-Download-Options">26.X-Download-Option</a>s</li>
+    </ul>
+  </div>
+
+  <div id="content">
+    <h1>Web Application Security: HTTP Headers</h1>
+
+    <!-- Section 1 -->
+    <div class="section" id="section-hsts">
+      <h2 class="header-title">1. Strict-Transport-Security (HSTS)</h2>
+
+      <div class="should-have">Should Have:</div>
+      <div class="example-code">
+        <pre>
+          <code>
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+          </code>
+        </pre>
+      </div>
+      <div class="explanation">
+        This header instructs browsers to only connect to the website over HTTPS for the specified duration, protecting against man-in-the-middle attacks.
+      </div>
+
+      <div class="should-not-have">Should Not Have:</div>
+      <div class="example-code">
+        <pre>
+          <code>
+            Strict-Transport-Security: max-age=0
+          </code>
+        </pre>
+      </div>
+      <div class="explanation">
+        Setting max-age to 0 means the browser should immediately stop enforcing HSTS, which could expose the application to downgrade attacks.
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section" id="section-csp">
+      <h2 class="header-title">2. Content Security Policy (CSP)</h2>
+
+      <div class="should-have">Should Have:</div>
+      <div class="example-code">
+        <pre>
+          <code>
+            Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-randomvalue'
+          </code>
+        </pre>
+      </div>
+      <div class="explanation">
+        This header defines the allowed sources for content, preventing XSS attacks by restricting where scripts can be loaded from.
+      </div>
+
+      <div class="should-not-have">Should Not Have:</div>
+      <div class="example-code">
+        <pre>
+          <code>
+            Content-Security-Policy: unsafe-inline
+          </code>
+        </pre>
+      </div>
+      <div class="explanation">
+        Allowing inline scripts (`unsafe-inline`) can introduce XSS vulnerabilities, as attackers may inject malicious scripts directly into the page.
+      </div>
+    </div>
+
+    <!-- Continue with the remaining sections -->
+    <!-- Section 3 -->
+<div class="section"id="section-3">
+    <h2 class="header-title">3. Cross-Origin Resource Sharing (CORS)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Access-Control-Allow-Origin: https://trusted-domain.com
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Restricts cross-origin requests to only the specified domain, preventing unintended data exposure.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Access-Control-Allow-Origin: *
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing any origin (`*`) can expose the application to Cross-Site Request Forgery (CSRF) and unauthorized data access.
+    </div>
+  </div>
+  
+  <!-- Section 4 -->
+  <div class="section" id="section-X-FRAME">
+    <h2 class="header-title">4. X-Frame-Options</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Frame-Options: DENY
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Prevents the web page from being embedded within an iframe, reducing the risk of clickjacking attacks.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Frame-Options: ALLOW-FROM https://trusted-domain.com
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing embedding on specific domains may introduce security risks if those domains are compromised.
+    </div>
+  </div>
+  
+  <!-- Section 5 -->
+  <div class="section" id="section-HPKP">
+    <h2 class="header-title">5. HTTP Public Key Pinning (HPKP)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Public-Key-Pins: pin-sha256="base64=="; max-age=5184000; includeSubDomains
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Pins the public key of the site's certificate, enhancing security against fraudulent certificates.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Public-Key-Pins: pin-sha256="base64=="; max-age=0
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Setting max-age to 0 effectively disables HPKP, potentially exposing the application to man-in-the-middle attacks.
+    </div>
+  </div>
+  
+  <!-- Section 6 -->
+  <div class="section" id="Referrer-Policy">
+    <h2 class="header-title">6. Referrer Policy</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Referrer-Policy: strict-origin-when-cross-origin
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Limits referrer information sent in requests, improving privacy and security.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Referrer-Policy: no-referrer
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Sending no referrer information could lead to information leakage and privacy issues.
+    </div>
+  </div>
+  
+  <!-- Section 7 -->
+  <div class="section" id="Cookie attributes">
+    <h2 class="header-title">7. Cookie Attributes (Secure, HttpOnly, SameSite)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Set-Cookie: sessionid=123; Secure; HttpOnly; SameSite=Strict
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Ensures cookies are transmitted securely over HTTPS, accessible only by the server, and subject to strict SameSite policies.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Set-Cookie: sessionid=123
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      A cookie without Secure, HttpOnly, and SameSite attributes may be vulnerable to interception, theft, and cross-site request forgery.
+    </div>
+  </div>
+  
+  <!-- Add more sections following the same structure -->
+  <!-- Section 8 -->
+<div class="section" id="Cache-Control Header">
+    <h2 class="header-title">8. Cache-Control Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Prevents caching of sensitive data on the client or intermediary servers, enhancing security.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cache-Control: public
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing public caching may expose sensitive information to unauthorized users.
+    </div>
+  </div>
+  
+  <!-- Section 9 -->
+  <div class="section" id="Server Header">
+    <h2 class="header-title">9. Server Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Server: MySecureApp
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Obfuscates or customizes the server header to avoid revealing unnecessary information about the web server.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Server: Apache/2.4.18 (Ubuntu)
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Revealing specific server details can be exploited by attackers who may target known vulnerabilities.
+    </div>
+  </div>
+  
+  <!-- Section 10 -->
+  <div class="section" id="expect-CT">
+    <h2 class="header-title">10. Expect-CT Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Expect-CT: enforce, max-age=86400
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Enforces Certificate Transparency, which helps ensure the use of valid SSL/TLS certificates.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Expect-CT: report-uri="https://example.com/report"
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Using report-uri without "enforce" allows for monitoring but does not enforce certificate transparency.
+    </div>
+  </div>
+  
+  <!-- Add more sections following the same structure -->
+  <!-- Section 11 -->
+<div class="section" id="Feature-Policy">
+    <h2 class="header-title">11. Feature Policy Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Feature-Policy: accelerometer 'none'; camera 'self'
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifies which browser features are allowed or disallowed on the web page, reducing attack surface.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Feature-Policy: *
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing all features (*) may expose the application to potential security risks.
+    </div>
+  </div>
+  
+  <!-- Section 12 -->
+  <div class="section" id="X-Content-Type-Options">
+    <h2 class="header-title">12. X-Content-Type-Options Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Content-Type-Options: nosniff
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Prevents browsers from MIME-sniffing, reducing the risk of interpreting files incorrectly.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Content-Type-Options: none
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Disabling X-Content-Type-Options allows browsers to MIME-sniff, potentially exposing security vulnerabilities.
+    </div>
+  </div>
+  
+  <!-- Section 13 -->
+  <div class="section" id="X-Content-Security-Policy">
+    <h2 class="header-title">13. X-Content-Security-Policy Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Content-Security-Policy: default-src 'self'; script-src 'self'
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Similar to CSP, this header defines content security policies for the page.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Content-Security-Policy: unsafe-inline
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing unsafe inline scripts can introduce XSS vulnerabilities.
+    </div>
+  </div>
+  
+  <!-- Section 16 -->
+  <div class="section" id="X-Permitted-Cross-Domain-Policies">
+    <h2 class="header-title">14. X-Permitted-Cross-Domain-Policies Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Permitted-Cross-Domain-Policies: none
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Disallows any cross-domain policy files, reducing the risk of security vulnerabilities.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Permitted-Cross-Domain-Policies: all
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing all cross-domain policy files (all) may expose the application to potential security risks.
+    </div>
+  </div>
+  
+  <!-- Section 17 -->
+  <div class="section" id="proxy">
+    <h2 class="header-title">15. Proxy Headers (X-Forwarded-For, X-Forwarded-Proto)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Forwarded-For: client_ip
+          X-Forwarded-Proto: https
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Helps preserve client IP and protocol information when behind a proxy, improving security and ensuring correct redirection.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Forwarded-For: *
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing a wildcard (*) in X-Forwarded-For may lead to IP spoofing and security risks.
+    </div>
+  </div>
+  
+  <!-- Section 18 -->
+  <div class="section" id="Early-Data">
+    <h2 class="header-title">16. Early-Data Header (Alt-Svc)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Alt-Svc: h2=":443"
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Informs the browser about alternative services, enhancing security when using HTTP/2.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Alt-Svc: clear
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifying "clear" may expose the application to potential downgrade attacks.
+    </div>
+  </div>
+  
+  <!-- Section 19 -->
+  <div class="section" id="X-Download-Options">
+    <h2 class="header-title">17. X-Download-Options Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Download-Options: noopen
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Prevents browsers from automatically opening files that are downloaded, reducing the risk of security vulnerabilities.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Download-Options: open
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing file opening (open) may expose users to potential security risks.
+    </div>
+  </div>
+  
+  
+  <!-- Add more sections following the same structure -->
+  <!-- Section 22 -->
+<div class="section" id="Public-Key-Pins">
+    <h2 class="header-title">18. Public-Key-Pins (Deprecated, Use Expect-CT Instead)</h2>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Public-Key-Pins: pin-sha256="base64=="; max-age=5184000; includeSubDomains
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Public-Key-Pins (HPKP) is deprecated and can have serious consequences if misconfigured. It is recommended to use Expect-CT for similar purposes.
+    </div>
+  </div>
+  
+  <!-- Section 23 -->
+  <div class="section" id="X-Clacks-Overhead">
+    <h2 class="header-title">19. X-Clacks-Overhead Header</h2>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Clacks-Overhead: GNU Terry Pratchett
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      This non-standard header is used as a tribute and should not be used for security. It doesn't provide any security benefits.
+    </div>
+  </div>
+  
+  <!-- Section 28 -->
+<div class="section" id="X-DNS-Prefetch-Control">
+    <h2 class="header-title">20. X-DNS-Prefetch-Control Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-DNS-Prefetch-Control: off
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Disables DNS prefetching, reducing the risk of privacy and security issues.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-DNS-Prefetch-Control: on
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Enabling DNS prefetching may lead to privacy concerns and potential security risks.
+    </div>
+  </div>
+  
+  
+  <!-- Section 31 -->
+  <div class="section" id="Content-Disposition">
+    <h2 class="header-title">21. Content-Disposition Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Content-Disposition: attachment; filename="example.pdf"
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifies how the browser should handle the content, improving security when serving downloadable files.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Content-Disposition: inline
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Using inline may lead to the execution of certain file types in the browser, posing security risks.
+    </div>
+  </div>
+  
+  <!-- Continue adding more sections as needed -->
+  <!-- Section 32 -->
+<div class="section" id="SameSite">
+    <h2 class="header-title">22. Cross-Domain Cookies (SameSite)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Set-Cookie: sessionid=123; Secure; HttpOnly; SameSite=Strict
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Ensures cookies are transmitted securely over HTTPS, accessible only by the server, and subject to strict SameSite policies.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Set-Cookie: sessionid=123; SameSite=None
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Using SameSite=None may expose cookies to cross-site requests, potentially leading to security risks.
+    </div>
+  </div>
+  
+  
+  <!-- Section 35 -->
+  <div class="section" id="X-WebKit-CSP">
+    <h2 class="header-title">23. X-WebKit-CSP Header (Deprecated in Modern Browsers)</h2>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-WebKit-CSP: default-src 'self'
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      X-WebKit-CSP is deprecated in modern browsers, and its use is discouraged.
+    </div>
+  </div>
+  
+  <!-- Continue adding more sections as needed -->
+  <!-- Section 36 -->
+<div class="section" id="X-XSS-Protection">
+    <h2 class="header-title">24. X-XSS-Protection Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-XSS-Protection: 1; mode=block
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Enables the browser's built-in Cross-Site Scripting (XSS) protection, preventing the rendering of pages when an XSS attack is detected.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-XSS-Protection: 0
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Disabling XSS protection (0) may expose the application to XSS attacks.
+    </div>
+  </div>
+  
+  
+  <!-- Continue adding more sections as needed -->
+  <!-- Section 39 -->
+<div class="section" id="Early-Data">
+    <h2 class="header-title">25. Early-Data Header (Alt-Svc)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Alt-Svc: h2=":443"
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Informs the browser about alternative services, enhancing security when using HTTP/2.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Alt-Svc: clear
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifying "clear" may expose the application to potential downgrade attacks.
+    </div>
+  </div>
+  
+  <!-- Section 40 -->
+  <div class="section" id="X-Download-Options">
+    <h2 class="header-title">26. X-Download-Options Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Download-Options: noopen
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Prevents browsers from automatically opening files that are downloaded, reducing the risk of security vulnerabilities.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          X-Download-Options: open
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing file opening (open) may expose users to potential security risks.
+    </div>
+  </div>
+  
+  <!-- Section 41 -->
+  <div class="section" id="Content-Disposition">
+    <h2 class="header-title">27. Content-Disposition Header</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Content-Disposition: attachment; filename="example.pdf"
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifies how the browser should handle the content, improving security when serving downloadable files.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Content-Disposition: inline
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Using inline may lead to the execution of certain file types in the browser, posing security risks.
+    </div>
+  </div>
+  
+  <!-- Continue adding more sections as needed -->
+  <!-- Section 42 -->
+<div class="section" id="COoP">
+    <h2 class="header-title">28. Cross-Origin Opener Policy (COOP)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Opener-Policy: same-origin
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifies that a document should be opened only in a browsing context that has the same origin as the document.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Opener-Policy: unsafe-none
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing unsafe-none may expose the application to potential security risks by relaxing the opener policy.
+    </div>
+  </div>
+  
+  <!-- Section 43 -->
+  <div class="section" id="COEP">
+    <h2 class="header-title">29. Cross-Origin Embedder Policy (COEP)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Embedder-Policy: require-corp
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Requires a cross-origin resource to be embedded with a CORP (Cross-Origin-Resource-Policy) header.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Embedder-Policy: unsafe-none
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing unsafe-none may expose the application to potential security risks by relaxing the embedder policy.
+    </div>
+  </div>
+  
+  <!-- Section 44 -->
+  <div class="section" id="CORP">
+    <h2 class="header-title">30. Cross-Origin Resource Policy (CORP)</h2>
+  
+    <div class="should-have">Should Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Resource-Policy: same-site
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Specifies that a cross-origin resource must be requested with a `same-site` request, enhancing security.
+    </div>
+  
+    <div class="should-not-have">Should Not Have:</div>
+    <div class="example-code">
+      <pre>
+        <code>
+          Cross-Origin-Resource-Policy: cross-origin
+        </code>
+      </pre>
+    </div>
+    <div class="explanation">
+      Allowing cross-origin may expose the application to potential security risks.
+    </div>
+  </div>
+  
+  
+</div>
+</body>
+</html>
