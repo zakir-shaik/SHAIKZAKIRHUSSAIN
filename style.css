@@ -309,5 +309,123 @@ body, h1, p, button {
     justify-content: space-between;
     width: -webkit-fill-available;
   }
+
+
+ body, h1, p, form, input, textarea, button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Container */
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+  }
+  
+  .container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .container form{
+    margin-left: -70px;
+    margin-top: 80px;
+  }
+  /* Form Styling */
+  .form-group {
+    margin-bottom: 20px;
+    
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Container */
+.container1 {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 93px;
+}
+
+h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+hr {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+ul {
+  margin-bottom: 20px;
+}
+
+.skill {
+  font-weight: bold;
+}
+
+.rating {
+  display: inline-block;
+  color: #f0ad4e; /* Star color */
+}
+
+.star {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.star:hover:before {
+  content: "\2605"; /* Filled star */
+}
   
 
